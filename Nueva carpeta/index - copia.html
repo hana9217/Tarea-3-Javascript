@@ -1,0 +1,106 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Tarea 3 Javascript</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var config = {
+    type: Phaser.WEBGL,
+    width: 800,
+    height: 800,
+    backgroundColor: '#000',
+    //parent: 'phaser-example',
+    physics: {
+        default: 'matter',
+        matter: {
+            debug: true
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+var graphics;
+var deathZone;
+var stars;
+var scale = 1.1;
+var xs = 48;
+
+var game = new Phaser.Game(config);
+
+function preload ()
+{
+    this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
+    this.load.image('star', 'assets/star.png');
+    this.load.image('blue', 'assets/sprites/columns-blue.png');
+}
+
+function create ()
+{
+    var emitZone = new Phaser.Geom.Rectangle(0, 0, 800, 800);
+
+    //  Any particles that enter this shape will be killed instantly
+   //var xs = 48;
+     xs += 100;
+
+     deathZone = new Phaser.Geom.Circle(0, 0, xs);
+    //deathZone = this.add.image(0, 0, 'star');
+   //deathZone = this.add.image(200, 50, 'blue');
+
+
+    var particles = this.add.particles('flares');
+   
+
+    var emitter = particles.createEmitter({
+        frame: [ 'red', 'green', 'blue' ],
+        speed: { min: -20, max: 20 },
+        lifespan: 10000,
+        quantity: 2,
+        scale: { min: 0.1, max: 0.4 },
+        alpha: { start: 1, end: 0 },
+        blendMode: 'ADD',
+        emitZone: { source: emitZone },
+        deathZone: { type: 'onEnter', source: deathZone }
+    });
+
+    graphics = this.add.graphics();
+
+    this.input.on('pointermove', function (pointer) {
+
+        deathZone.x = pointer.x;
+        deathZone.y = pointer.y;
+
+    });
+}
+
+function update ()
+{
+    graphics.clear();
+
+    graphics.lineStyle(1, 0x00ff00, 1);
+
+    graphics.strokeCircleShape(deathZone);
+
+    //deathZone = Phaser.Geom.Circle(0, 0, 48);
+  
+    //deathZone = Phaser.Geom.Circle(0, 0, xs);
+}
+    
+   
+</script>
+
+</body>
+</html>

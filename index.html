@@ -21,7 +21,7 @@
         physics: {
             default: 'arcade',
             arcade: {
-                gravity: { y: 400 },
+                gravity: { y: 0 },
                 debug: false
             }
         },
@@ -34,112 +34,78 @@
 
     var player;
     var stars;
-    var bombs;
-    var platforms;
+    //var platforms;
     var cursors;
     var score = 0;
-    var gameOver = false;
     var scoreText;
+    var scale = 1.1;
 
     var game = new Phaser.Game(config);
 
     function preload ()
     {
-        this.load.image('sky', 'assets/sky.png');
+        this.load.image('sky', 'assets/special.png');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
-        this.load.image('bomb', 'assets/bomb.png');
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 49, frameHeight: 46 });
+        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 48, frameHeight: 48 });
     }
 
     function create ()
     {
         this.add.image(400, 400, 'sky');
 
-        platforms = this.physics.add.staticGroup();
+        //platforms = this.physics.add.staticGroup();
 
-        platforms.create(400, 817, 'ground').setScale(2).refreshBody();
+        //platforms.create(400, 826, 'ground').setScale(2).refreshBody();
 
-        platforms.create(650, 400, 'ground');
-        platforms.create(60, 300, 'ground');
-        platforms.create(550, 220, 'ground');
-        platforms.create(15, 150, 'ground');
-        platforms.create(110, 450, 'ground');
-        platforms.create(400, 600, 'ground');
-        platforms.create(900, 80, 'ground');
-
-        //this.add.image(400, 300, 'star');
-        //this.add.image(200, 100, 'star');
-
-        player = this.physics.add.sprite(100, 450, 'dude');
-
-        player.setBounce(0.2);
-        player.setCollideWorldBounds(true);
-
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 2 }),
-            frameRate: 7,
-            repeat: -1
-        });
+        player = this.physics.add.sprite(200, 400, 'dude');
+        //player.setCollideWorldBounds(true);//bordes area
 
         this.anims.create({
             key: 'turn',
-            frames: [ { key: 'dude', frame: 3 } ],
-            frameRate: 10
+            frames: [ { key: 'dude', frame: 0 } ],
+            frameRate: 0
         });
 
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 4, end: 7 }),
-            frameRate: 7,
-            repeat: -1
-        });
-
+       
         cursors = this.input.keyboard.createCursorKeys();
 
         stars = this.physics.add.group({      
             key: 'star',
-            repeat: Math.floor((Math.random() * 10) + 3),
-            setXY: { x: 17, y:Math.floor((Math.random() * 400) + 1)+200, stepX:  Math.floor(Math.random()*95) }         
-        });
-
-        stars.children.iterate(function (child) {
-
-            child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.9));
-
+            //repeat: Math.floor((Math.random() * 10) + 3),
+            //setXY: { x: 17, y:Math.floor((Math.random() * 400) + 1)+200, stepX:  Math.floor(Math.random()*95) } 
         });
 
         bombs = this.physics.add.group();
 
         scoreText = this.add.text(566, 16, 'score: 0', { fontSize: '32px', fill: '#cb4154' });
-
-        this.physics.add.collider(player, platforms);
-        this.physics.add.collider(stars, platforms);
-        this.physics.add.collider(bombs, platforms);
         
         this.physics.add.overlap(player, stars, collectStar, null, this);
-        this.physics.add.collider(player, bombs, hitBomb, null, this);
+
+        this.input.on('pointermove', function (pointer) {
+
+        player.x = pointer.x;
+        player.y = pointer.y;
+        player.setVelocityX(2000);
+    
+        });
+
     }
 
     function update ()
     {
-        if (gameOver)
-        {
-            return;
-        }
-
+        
         if (cursors.left.isDown)
         {
-            player.setVelocityX(-160);
+            //player.setVelocityX(-160);
 
-            player.anims.play('left', true);
+            //player.anims.play('left', true);
         }
         else if (cursors.right.isDown)
         {
-            player.setVelocityX(160);
+            //player.setVelocityX(160);
 
-            player.anims.play('right', true);
+            //player.anims.play('right', true);
         }
         else
         {
@@ -156,43 +122,35 @@
 
     function collectStar (player, star)
     {
-        star.disableBody(true, true);
+        star.disableBody(true, true);//crece solo
 
-        score += 100;
+        score += 10;
         scoreText.setText('Score: ' + score);
 
         if (stars.countActive(true) === 0)
         {
             stars.children.iterate(function (child) {
 
-                child.enableBody(true, child.x, 0, true, true);
-
+                //child.enableBody(true, child.x, 0, true, true);
             });
 
             var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
             var y = (player.y < 400) ? Phaser.Math.Between(800, 400) : Phaser.Math.Between(0, 400);
 
-            var bomb = bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);*/
+            var star = stars.create(700, 700, 'star');
+            var star = stars.create(x, 200, 'star');
             var star = stars.create(x, y, 'star');
-            //var star = stars.create(x, 2, 'star')
+            var star = stars.create(300, y, 'star');
+            var star = stars.create(50, 750, 'star');
         }
+        
+        player.setScale(scale);
+        scale += 0.05;
     }
-
-    function hitBomb (player, bomb)
-    {
-        this.physics.pause();
-
-        player.setTint(0xff0000);
-
-        player.anims.play('turn');
-
-        gameOver = true;
-    }
+//https://labs.phaser.io/edit.html?src=src/loader/tile%20maps/load%20tile%20map%20json%20from%20scene%20payload.js&v=3.22.0
 
 </script>
 
 </body>
 </html>
+
