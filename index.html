@@ -72,8 +72,8 @@
 
         stars = this.physics.add.group({      
             key: 'star',
-            //repeat: Math.floor((Math.random() * 10) + 3),
-            //setXY: { x: 17, y:Math.floor((Math.random() * 400) + 1)+200, stepX:  Math.floor(Math.random()*95) } 
+            repeat: Math.floor((Math.random() * 4) +0 ),
+            setXY: { x: 17, y:Math.floor((Math.random() * 400) + 1)+200, stepX:  Math.floor(Math.random()*95) } 
         });
 
         bombs = this.physics.add.group();
@@ -86,7 +86,7 @@
 
         player.x = pointer.x;
         player.y = pointer.y;
-        player.setVelocityX(2000);
+        player.setVelocityX(1500);
     
         });
 
@@ -137,26 +137,21 @@
             var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
             var y = (player.y < 400) ? Phaser.Math.Between(800, 400) : Phaser.Math.Between(0, 400);
 
-<<<<<<< HEAD
-            var star = stars.create(700, 700, 'star');
+
+            var star = stars.create(600, 600, 'star');
             var star = stars.create(x, 200, 'star');
             var star = stars.create(x, y, 'star');
             var star = stars.create(300, y, 'star');
             var star = stars.create(50, 750, 'star');
-=======
-            var bomb = bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);*/
             var star = stars.create(x, y, 'star');
-            //var star = stars.create(x, 2, 'star')
->>>>>>> 5816cc4fefeae29d1293da32ff853e22c81561b8
+            var star = stars.create(x, 2, 'star')
+          
         }
         
         player.setScale(scale);
         scale += 0.05;
     }
-//https://labs.phaser.io/edit.html?src=src/loader/tile%20maps/load%20tile%20map%20json%20from%20scene%20payload.js&v=3.22.0
+
 
 </script>
 
